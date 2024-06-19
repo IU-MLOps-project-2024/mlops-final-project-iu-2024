@@ -237,3 +237,5 @@ fabric.properties
 .idea/caches/build_file_checksums.ser
 
 # Manually added
+mlops_env/bin/python
+mlops_env/bin/python3
