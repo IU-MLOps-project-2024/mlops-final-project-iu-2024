@@ -1,6 +1,7 @@
 hydra-core
 dvc
 pytest
+ruamel.yaml==0.17.17
 great_expectations
 pandas
 scikit-learn
