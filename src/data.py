@@ -1,3 +1,4 @@
+"""Script to create sample"""
 import os
 import pandas as pd
 import hydra
@@ -5,6 +6,7 @@ import dvc.api
 
 @hydra.main(config_path="../configs", config_name = "main", version_base=None)
 def sample_data(cfg = None):
+    """Main function of script"""
     data_url = dvc.api.get_url(
         path=cfg.data.path,
         remote=cfg.data.remote,
