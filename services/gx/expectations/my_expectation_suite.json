@@ -1,0 +1,307 @@
+{
+  "data_asset_type": null,
+  "expectation_suite_name": "my_expectation_suite",
+  "expectations": [
+    {
+      "expectation_type": "expect_column_values_to_be_unique",
+      "kwargs": {
+        "column": "itemid"
+      },
+      "meta": {}
+    },
+    {
+      "expectation_type": "expect_column_values_to_not_be_null",
+      "kwargs": {
+        "column": "itemid"
+      },
+      "meta": {}
+    },
+    {
+      "expectation_type": "expect_column_min_to_be_between",
+      "kwargs": {
+        "column": "itemid",
+        "min": 0
+      },
+      "meta": {}
+    },
+    {
+      "expectation_type": "expect_column_min_to_be_between",
+      "kwargs": {
+        "column": "shopid",
+        "min": 0
+      },
+      "meta": {}
+    },
+    {
+      "expectation_type": "expect_column_values_to_not_be_null",
+      "kwargs": {
+        "column": "shopid"
+      },
+      "meta": {}
+    },
+    {
+      "expectation_type": "expect_column_values_to_be_of_type",
+      "kwargs": {
+        "column": "shopid",
+        "type_": "int64"
+      },
+      "meta": {}
+    },
+    {
+      "expectation_type": "expect_column_values_to_not_be_null",
+      "kwargs": {
+        "column": "cb_option"
+      },
+      "meta": {}
+    },
+    {
+      "expectation_type": "expect_column_distinct_values_to_be_in_set",
+      "kwargs": {
+        "column": "cb_option",
+        "value_set": [
+          0,
+          1
+        ]
+      },
+      "meta": {}
+    },
+    {
+      "expectation_type": "expect_column_quantile_values_to_be_between",
+      "kwargs": {
+        "column": "cb_option",
+        "quantile_ranges": {
+          "quantiles": [
+            0,
+            0.2,
+            1
+          ],
+          "value_ranges": [
+            [
+              0,
+              0
+            ],
+            [
+              0,
+              1
+            ],
+            [
+              1,
+              1
+            ]
+          ]
+        }
+      },
+      "meta": {}
+    },
+    {
+      "expectation_type": "expect_column_values_to_not_be_null",
+      "kwargs": {
+        "column": "is_preferred"
+      },
+      "meta": {}
+    },
+    {
+      "expectation_type": "expect_column_distinct_values_to_be_in_set",
+      "kwargs": {
+        "column": "is_preferred",
+        "value_set": [
+          0,
+          1
+        ]
+      },
+      "meta": {}
+    },
+    {
+      "expectation_type": "expect_column_quantile_values_to_be_between",
+      "kwargs": {
+        "column": "is_preferred",
+        "quantile_ranges": {
+          "quantiles": [
+            0,
+            0.8,
+            1
+          ],
+          "value_ranges": [
+            [
+              0,
+              0
+            ],
+            [
+              0,
+              1
+            ],
+            [
+              1,
+              1
+            ]
+          ]
+        }
+      },
+      "meta": {}
+    },
+    {
+      "expectation_type": "expect_column_values_to_be_dateutil_parseable",
+      "kwargs": {
+        "column": "item_creation_date"
+      },
+      "meta": {}
+    },
+    {
+      "expectation_type": "expect_column_values_to_not_be_null",
+      "kwargs": {
+        "column": "item_creation_date"
+      },
+      "meta": {}
+    },
+    {
+      "expectation_type": "expect_column_min_to_be_between",
+      "kwargs": {
+        "column": "item_creation_date",
+        "max": "01-02-2016",
+        "min": "01-01-2016"
+      },
+      "meta": {}
+    },
+    {
+      "expectation_type": "expect_column_values_to_not_be_null",
+      "kwargs": {
+        "column": "price"
+      },
+      "meta": {}
+    },
+    {
+      "expectation_type": "expect_column_values_to_be_between",
+      "kwargs": {
+        "column": "price",
+        "max_value": 10000000000.0,
+        "min_value": 0
+      },
+      "meta": {}
+    },
+    {
+      "expectation_type": "expect_column_quantile_values_to_be_between",
+      "kwargs": {
+        "column": "price",
+        "quantile_ranges": {
+          "quantiles": [
+            0,
+            0.5,
+            1
+          ],
+          "value_ranges": [
+            [
+              0,
+              1
+            ],
+            [
+              5,
+              30
+            ],
+            [
+              100000.0,
+              10000000000.0
+            ]
+          ]
+        }
+      },
+      "meta": {}
+    },
+    {
+      "expectation_type": "expect_column_values_to_not_be_null",
+      "kwargs": {
+        "column": "stock"
+      },
+      "meta": {}
+    },
+    {
+      "expectation_type": "expect_column_values_to_be_between",
+      "kwargs": {
+        "column": "stock",
+        "max_value": 10000000000.0,
+        "min_value": 0
+      },
+      "meta": {}
+    },
+    {
+      "expectation_type": "expect_column_quantile_values_to_be_between",
+      "kwargs": {
+        "column": "stock",
+        "quantile_ranges": {
+          "quantiles": [
+            0,
+            0.5,
+            1
+          ],
+          "value_ranges": [
+            [
+              0,
+              1
+            ],
+            [
+              100,
+              1000
+            ],
+            [
+              100000.0,
+              10000000000.0
+            ]
+          ]
+        }
+      },
+      "meta": {}
+    },
+    {
+      "expectation_type": "expect_column_distinct_values_to_equal_set",
+      "kwargs": {
+        "column": "category",
+        "value_set": [
+          "Mobile & Gadgets",
+          "Women's Apparel",
+          "Men's Wear",
+          "Health & Beauty",
+          "Bags & Luggage",
+          "Toys, Kids & Babies",
+          "Sports & Outdoors",
+          "Men's Shoes",
+          "Women's Shoes",
+          "Jewellery & Accessories",
+          "Home & Living",
+          "Games & Hobbies",
+          "Pet Accessories",
+          "Design & Crafts",
+          "Computers & Peripherals",
+          "Watches",
+          "Miscellaneous ",
+          "Home Appliances",
+          "Food & Beverages",
+          "Tickets & Vouchers"
+        ]
+      },
+      "meta": {}
+    },
+    {
+      "expectation_type": "expect_column_most_common_value_to_be_in_set",
+      "kwargs": {
+        "column": "category",
+        "value_set": [
+          "Women's Apparel",
+          "Mobile & Gadgets",
+          "Jewellery & Accessories",
+          "Men's Wear"
+        ]
+      },
+      "meta": {}
+    },
+    {
+      "expectation_type": "expect_column_to_exist",
+      "kwargs": {
+        "column": "category"
+      },
+      "meta": {}
+    }
+  ],
+  "ge_cloud_id": null,
+  "meta": {
+    "great_expectations_version": "0.18.16"
+  }
+}
