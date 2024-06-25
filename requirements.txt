@@ -2,3 +2,7 @@ hydra-core
 dvc
 pytest
 great_expectations
+pandas
+scikit-learn
+matplotlib
+seaborn

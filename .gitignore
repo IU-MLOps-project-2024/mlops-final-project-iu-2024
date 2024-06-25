@@ -239,3 +239,4 @@ fabric.properties
 # Manually added
 mlops_env/bin/python
 mlops_env/bin/python3
+data/raw/*
