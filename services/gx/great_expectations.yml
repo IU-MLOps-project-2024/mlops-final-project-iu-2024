@@ -104,7 +104,7 @@ fluent_datasources:
     assets:
       asset01:
         type: csv
-        filepath_or_buffer: ..\data\raw\Test_Pandas.csv
+        filepath_or_buffer: data\raw\Test_Pandas.csv
 notebooks:
 include_rendered_content:
   globally: false
