@@ -1,0 +1,4 @@
+[core]
+    remote = localstore
+['remote "localstore"']
+    url = C:/Users/sasha/Desktop/Inno/mlops-final-project-iu-2024/datastore
