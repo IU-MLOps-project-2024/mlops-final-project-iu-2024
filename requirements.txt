@@ -7,3 +7,16 @@ pandas
 scikit-learn
 matplotlib
 seaborn
+zenml[server]
+apache-airflow
+feast
+pendulum
+shyaml
+mlflow
+giskard
+evidently
+Flask
+flask-session2
+psycopg2-binary
+--extra-index-url https://download.pytorch.org/whl/cu121
+torch
