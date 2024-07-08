@@ -1,4 +1,5 @@
 [core]
-    remote = localstore
-['remote "localstore"']
-    url = C:/Users/sasha/Desktop/Innopolis/mlops-final-project-iu-2024/datastore
+    remote = myremote
+['remote "myremote"']
+    url = gdrive://1RF1g5eUFe2JYu2dWZp77f60Fg2zoRK5g
+    gdrive_acknowledge_abuse = true

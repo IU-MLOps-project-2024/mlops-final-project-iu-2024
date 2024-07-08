@@ -1,5 +1,6 @@
 hydra-core
 dvc
+dvc_gdrive
 pytest
 ruamel.yaml==0.17.17
 great_expectations
