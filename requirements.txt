@@ -1,6 +1,5 @@
 hydra-core
 dvc
-dvc_gdrive
 pytest
 ruamel.yaml==0.17.17
 great_expectations
@@ -9,7 +8,7 @@ scikit-learn
 matplotlib
 seaborn
 zenml[server]
-apache-airflow
+apache-airflow==2.7.3
 feast
 pendulum
 shyaml

@@ -1,5 +1,4 @@
 [core]
-    remote = myremote
-['remote "myremote"']
-    url = gdrive://1RF1g5eUFe2JYu2dWZp77f60Fg2zoRK5g
-    gdrive_acknowledge_abuse = true
+    remote = localstore
+['remote "localstore"']
+    url = /home/aleksandr-vashchenko/Repos/mlops-final-project-iu-2024/datastore
