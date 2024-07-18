@@ -1,1 +1,2 @@
-pip install -r requirements.txt --use-deprecated=legacy-resolver
+#!/bin/bash
+pip install -r requirements.txt --upgrade

@@ -1,0 +1,10 @@
+[2024-07-13 17:17:27 +0300] [21102] [INFO] Starting gunicorn 22.0.0
+[2024-07-13 17:17:27 +0300] [21102] [INFO] Listening at: http://[::]:8794 (21102)
+[2024-07-13 17:17:27 +0300] [21102] [INFO] Using worker: sync
+[2024-07-13 17:17:27 +0300] [21103] [INFO] Booting worker with pid: 21103
+[2024-07-13 17:17:27 +0300] [21104] [INFO] Booting worker with pid: 21104
+[2024-07-13 17:35:23 +0300] [21104] [INFO] Worker exiting (pid: 21104)
+[2024-07-13 17:35:23 +0300] [21103] [INFO] Worker exiting (pid: 21103)
+[2024-07-13 17:35:23 +0300] [21102] [INFO] Handling signal: term
+[2024-07-13 17:35:23 +0300] [21102] [INFO] Shutting down: Master
+Terminating on signal 15
