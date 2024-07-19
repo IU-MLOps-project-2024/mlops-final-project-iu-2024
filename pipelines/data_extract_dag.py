@@ -20,7 +20,7 @@ def load_sample_to_dvc_remote(**kwargs):
         [
             "dvc",
             "add",
-            '~/Desktop/mlops-final-project-iu-2024/data/samples/sample.csv'
+            'data/samples/sample.csv'
         ],
         check=True
     )
@@ -31,7 +31,7 @@ def load_sample_to_dvc_remote(**kwargs):
             "add",
             "-d",
             "localstore",
-            "~/Desktop/mlops-final-project-iu-2024/datastore"
+            "~/Desktop/mlops-final-project-iu-2024/datastore/"
         ],
         check=True
     )
