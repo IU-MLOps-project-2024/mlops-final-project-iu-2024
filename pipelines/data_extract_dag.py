@@ -39,7 +39,7 @@ def load_sample_to_dvc_remote(**kwargs):
 
 def version_sample(
     data_path='data/samples/sample.csv',
-    version_file='~/Desktop/mlops-final-project-iu-2024/configs/data_version.yaml',
+    version_file='configs/data_version.yaml',
     **kwargs
 ):
     if os.path.exists(version_file):
@@ -51,17 +51,17 @@ def version_sample(
     
     new_version = current_version + 1
 
+    version_data = {'version': new_version}
+    with open(version_file, 'w') as f:
+        yaml.safe_dump(version_data, f)
+
     # run_command(['dvc', 'add', data_path])
     subprocess.run(['dvc', 'add', data_path], check=True)
-    subprocess.run(['git', 'add', data_path + '.dvc'], check=True)
+    subprocess.run(['git', 'add', '.'], check=True)
     # subprocess.run(['git', 'commit', '-m', f"Version {new_version} of sample data"], check=True)
     run_command(['git', 'commit', '-m', f"Version {new_version} of sample data"])
 
     subprocess.run(['dvc', 'push'], check=True)
-
-    version_data = {'version': new_version}
-    with open(version_file, 'w') as f:
-        yaml.safe_dump(version_data, f)
 
 
 def run_command(command):
