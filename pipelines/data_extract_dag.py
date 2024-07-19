@@ -56,26 +56,11 @@ def version_sample(
     with open(version_file, 'w') as f:
         yaml.safe_dump(version_data, f)
 
-    # run_command(['dvc', 'add', data_path])
     subprocess.run(['dvc', 'add', data_path], check=True)
     subprocess.run(['git', 'add', '.'], check=True)
-    # subprocess.run(['git', 'commit', '-m', f"Version {new_version} of sample data"], check=True)
-    run_command(['git', 'commit', '-m', f"Version {new_version} of sample data"])
+    subprocess.run(['git', 'commit', '-m', f"Version {new_version} of sample data"], check=True)
 
     subprocess.run(['dvc', 'push'], check=True)
-
-
-def run_command(command):
-    try:
-        result = subprocess.run(command, check=True, stdout=subprocess.PIPE, stderr=subprocess.PIPE, text=True)
-        print(result.stdout)
-        return result
-    except subprocess.CalledProcessError as e:
-        print(f"Error running command: {' '.join(command)}")
-        print(f"Exit status: {e.returncode}")
-        print(f"Output: {e.stdout}")
-        print(f"Error: {e.stderr}")
-        raise
 
 # Default arguments for the DAG
 default_args = {
@@ -108,19 +93,17 @@ extract_task = PythonOperator(
 validate_task = PythonOperator(
     task_id='validate_sample',
     python_callable=validate_sample,
+    depends_on_past=True,
+    trigger_rule='all_success',
     dag=dag,
 )
-
-# version_step = BashOperator(
-#     task_id= 'version_data',
-#     bash_command="../scripts/test_data.sh ../data/samples/sample.csv dev",
-#     dag=dag
-# )
 
 # Task 3: Version the sample using DVC
 version_task = PythonOperator(
     task_id='version_sample',
     python_callable=version_sample,
+    depends_on_past=True,
+    trigger_rule='all_success',
     dag=dag,
 )
 
@@ -128,6 +111,8 @@ version_task = PythonOperator(
 load_task = PythonOperator(
     task_id='load_sample_to_dvc_remote',
     python_callable=load_sample_to_dvc_remote,
+    depends_on_past=True,
+    trigger_rule='all_success',
     dag=dag,
 )
 
