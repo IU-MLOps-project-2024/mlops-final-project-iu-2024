@@ -1,3 +1,16 @@
+defaults:
+  - _self_
+  - data/sample
+  - data_version
+  - model/model
+  - experiment
+
+hydra:
+  mode: MULTIRUN
+  sweeper:
+    params:
+      +model: "dt, mlp, lr"
+
 data:
   version: v1.0
   remote: localstore

@@ -1,0 +1,9 @@
+experiment_name: "mlops_experiment"
+run_name: "multi_run"
+
+test_size: 0.2
+random_state: 88
+cv_n_jobs: -1
+
+train_data_version: "v4"
+test_data_version: "v5"

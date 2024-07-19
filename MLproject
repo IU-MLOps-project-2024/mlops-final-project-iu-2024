@@ -1,0 +1,8 @@
+name: Predicting category of the item
+
+entry_points:
+  main:
+    command: "python src/main.py"
+  
+  evaluate:
+    command: "python src/evaluate.py"

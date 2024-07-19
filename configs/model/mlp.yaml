@@ -1,0 +1,12 @@
+model_name: MLP
+artifact_path: basic_mlp
+
+tag_key: "model"
+tag_value: "basic MLP"
+
+module_name: "torch"
+
+params:
+  module__num_layers: [3, 4, 5]
+  modeule__hidden_size: [512, 768, 1024]
+  lr: [0.001, 0.0005, 0.0001]
