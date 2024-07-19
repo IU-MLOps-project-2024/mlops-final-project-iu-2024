@@ -157,7 +157,6 @@
       "expectation_type": "expect_column_min_to_be_between",
       "kwargs": {
         "column": "item_creation_date",
-        "max": "01-02-2016",
         "min": "01-01-2016"
       },
       "meta": {}
@@ -198,7 +197,7 @@
               30
             ],
             [
-              100000.0,
+              100,
               10000000000.0
             ]
           ]
@@ -242,7 +241,7 @@
               1000
             ],
             [
-              100000.0,
+              1000,
               10000000000.0
             ]
           ]
@@ -302,6 +301,6 @@
   ],
   "ge_cloud_id": null,
   "meta": {
-    "great_expectations_version": "0.18.16"
+    "great_expectations_version": "0.18.19"
   }
 }

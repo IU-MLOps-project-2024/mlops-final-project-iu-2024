@@ -17,7 +17,7 @@ def sample_data(cfg = None):
     # Take a sample of the data
     data = pd.read_csv(data_url)
     sample = data.iloc[:int(len(data) * sample_size)]
-    sample.to_csv('data/samples/sample.csv', index=False)
+    sample.to_csv('~/Desktop/mlops-final-project-iu-2024/data/samples/sample.csv', index=False)
 
 if __name__ == "__main__":
     sample_data()
