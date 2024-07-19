@@ -29,6 +29,7 @@ def load_sample_to_dvc_remote(**kwargs):
             "dvc",
             "remote",
             "add",
+            "--force",
             "-d",
             "localstore",
             "~/Desktop/mlops-final-project-iu-2024/datastore/"
