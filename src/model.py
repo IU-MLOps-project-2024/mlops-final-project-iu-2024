@@ -1,5 +1,7 @@
 """Script for running models"""
 import importlib
+import sys
+import os
 from sklearn.model_selection import GridSearchCV
 from sklearn.model_selection import StratifiedKFold
 from zenml.client import Client
@@ -8,22 +10,26 @@ import mlflow
 import mlflow.sklearn
 import torch
 import skorch
+
+sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), '..')))
+
 from models.mlp import MLP
 
 def load_features(name, version, size = 1):
     """Load features"""
-    client = Client()
-    l = client.list_artifact_versions(name = name, tag = version, sort_by="version").items
-    l.reverse()
+    # client = Client()
+    # l = client.list_artifact_versions(name = name, tag = version, sort_by="version").items
+    # l.reverse()
 
-    df = l[0].load()
+    # df = l[0].load()
+    df = pd.read_csv("./data/raw/Test_Pandas.csv")
     df = df.sample(frac = size, random_state = 88)
 
     print("size of df is ", df.shape)
     print("df columns: ", df.columns)
 
-    X = df[df.columns[:-1]]
-    y = df.y
+    X = df.loc[:, df.columns != 'category']
+    y = df['category']
 
     print("shapes of X,y = ", X.shape, y.shape)
 
