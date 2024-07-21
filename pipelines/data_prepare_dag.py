@@ -3,6 +3,8 @@ from airflow import DAG
 from airflow.sensors.external_task_sensor import ExternalTaskSensor
 from airflow.operators.bash_operator import BashOperator
 from airflow.utils.trigger_rule import TriggerRule
+from airflow.operators.trigger_dagrun import TriggerDagRunOperator
+
 
 # Define default_args
 default_args = {
@@ -20,25 +22,17 @@ with DAG(
     default_args=default_args,
     description='DAG to run ZenML pipeline after data extraction is successful',
     schedule_interval=timedelta(minutes=5),
-    start_date=datetime(2023, 1, 1),
+    start_date=datetime.now(),
     catchup=False,
 ) as dag:
 
-    # Task 1: ExternalTaskSensor to wait for completion of data_extract_dag
     wait_for_data_extraction = ExternalTaskSensor(
         task_id='wait_for_data_extraction',
         external_dag_id='data_extract_dag',
-        external_task_id=None,  # Wait for all tasks in the external DAG to complete
-        allowed_states=['success'],
-        failed_states=['failed', 'skipped'],
-        execution_delta=timedelta(minutes=5),
-        mode='poke',
-        timeout=600,
-        poke_interval=30,
-        retries=2,
+        external_task_id="load_sample_to_dvc_remote",
+        timeout=300
     )
 
-    # Task 2: BashOperator to run the ZenML pipeline
     run_zenml_pipeline = BashOperator(
         task_id='run_zenml_pipeline',
         bash_command='zenml pipeline run data_prepare_pipeline',
@@ -47,5 +41,8 @@ with DAG(
 
     # Set task dependencies
     wait_for_data_extraction >> run_zenml_pipeline
+
+if __name__ == "__main__":
+    dag.test()
 
 

@@ -37,6 +37,10 @@ def get_data_version(
 ):
     with open(config_file, 'r') as file:
         config = yaml.safe_load(file)
+    if not 'version' in config:
+        raise KeyError("No version in config")
+    if config['version'] is None:
+        raise KeyError("Version is None")
     return str(config['version'])
 
 def read_datastore():
