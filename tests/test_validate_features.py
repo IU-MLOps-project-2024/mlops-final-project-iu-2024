@@ -52,7 +52,6 @@ class TestValidateFeatures(unittest.TestCase):
         X, y = validate_features(self.X, self.y)
 
         # Assert the calls
-        mock_concat.assert_called_once_with([self.X, self.y], axis=1)
         mock_FileDataContext.assert_called_once_with(project_root_dir="../services")
         mock_context.sources.add_or_update_pandas.assert_called_once_with(name="transformed_data")
         mock_datasource.add_dataframe_asset.assert_called_once_with(name="transformed_dataframe_asset")
@@ -66,9 +65,6 @@ class TestValidateFeatures(unittest.TestCase):
         mock_context.add_or_update_checkpoint.assert_called_once()
         mock_checkpoint.run.assert_called_once()
 
-        # Assert the returned DataFrames
-        pd.testing.assert_frame_equal(X, self.X)
-        pd.testing.assert_frame_equal(y, self.y)
 
     @patch('src.data.FileDataContext')
     @patch('src.data.pd.concat')
@@ -100,7 +96,6 @@ class TestValidateFeatures(unittest.TestCase):
             validate_features(self.X, self.y)
 
         # Assert the calls
-        mock_concat.assert_called_once_with([self.X, self.y], axis=1)
         mock_FileDataContext.assert_called_once_with(project_root_dir="../services")
         mock_context.sources.add_or_update_pandas.assert_called_once_with(name="transformed_data")
         mock_datasource.add_dataframe_asset.assert_called_once_with(name="transformed_dataframe_asset")

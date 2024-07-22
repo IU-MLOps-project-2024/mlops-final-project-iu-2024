@@ -12,7 +12,7 @@ from src.data import read_datastore, preprocess_data, validate_features, load_fe
 
 
 # Step definitions
-@step
+@step(enable_cache=False)
 def extract() -> Tuple[
                     Annotated[
                         pd.DataFrame,
@@ -29,7 +29,7 @@ def extract() -> Tuple[
     df, version = read_datastore()
     return df, version
 
-@step
+@step(enable_cache=False)
 def transform(df: pd.DataFrame) -> Tuple[
                     Annotated[
                         pd.DataFrame,
@@ -49,7 +49,7 @@ def transform(df: pd.DataFrame) -> Tuple[
     X, y = preprocess_data(df)
     return X, y
 
-@step
+@step(enable_cache=False)
 def validate(X: pd.DataFrame, y: pd.DataFrame) -> Tuple[
                     Annotated[
                         pd.DataFrame,
@@ -69,7 +69,7 @@ def validate(X: pd.DataFrame, y: pd.DataFrame) -> Tuple[
     X, y = validate_features(X, y)
     return X, y
 
-@step
+@step(enable_cache=False)
 def load(X: pd.DataFrame, y: pd.DataFrame, version: str) -> Tuple[
                     Annotated[
                         pd.DataFrame, 
