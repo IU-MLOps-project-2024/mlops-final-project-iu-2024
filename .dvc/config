@@ -1,4 +1,4 @@
 [core]
     remote = localstore
 ['remote "localstore"']
-    url = /home/datapaf/Desktop/mlops-final-project-iu-2024/datastore/
+    url = /home/aleksandr-vashchenko/Desktop/mlops-final-project-iu-2024/datastore/

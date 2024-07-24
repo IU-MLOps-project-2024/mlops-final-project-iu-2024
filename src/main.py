@@ -7,13 +7,9 @@ def run(args):
     """Run function"""
     cfg = args
 
-    train_data_version = cfg.train_data_version
+    X_train, y_train = load_features(name = "features_target", version=1)
 
-    X_train, y_train = load_features(name = "features_target", version=train_data_version)
-
-    test_data_version = cfg.test_data_version
-
-    X_test, y_test = load_features(name = "features_target", version=test_data_version)
+    X_test, y_test = load_features(name = "features_target", version=0)
 
     gs = train(X_train, y_train, cfg=cfg)
 

@@ -19,7 +19,7 @@ from sklearn.feature_extraction.text import TfidfVectorizer
 from sklearn.preprocessing import LabelEncoder
 import numpy as np
 
-@hydra.main(config_path="../configs", config_name = "main", version_base=None)
+@hydra.main(config_path="./configs", config_name = "main", version_base=None)
 def sample_data(cfg = None):
     """Main function of script"""
     data_url = dvc.api.get_url(
@@ -107,7 +107,7 @@ def validate_features(X, y, name_suite="transformed_suite"):
 
     df = pd.concat([X, y], axis=1)
 
-    context = FileDataContext(project_root_dir="../services")
+    context = FileDataContext(project_root_dir="./services")
 
     ds = context.sources.add_or_update_pandas(name="transformed_data")
     da = ds.add_dataframe_asset(name = "transformed_dataframe_asset")
@@ -174,7 +174,7 @@ def load_features(X, y, data_version):
 def validate_sample(**kwargs):
     validate_initial_data("~/Desktop/mlops-final-project-iu-2024/data/samples/sample.csv")
 
-@hydra.main(config_path="../configs", config_name="data_version", version_base=None)
+@hydra.main(config_path="./configs", config_name="data_version", version_base=None)
 def version_sample(cfg=None):
 
     cfg.version += 1
