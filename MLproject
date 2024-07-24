@@ -1,0 +1,57 @@
+name: my_mlflow_project
+
+entry_points:
+
+  main:
+    command: "python src/main.py --multirun"
+
+  evaluate:
+    parameters:
+      data_version: {type: string, default: "3.5c"}
+      model_name: {type: string, default: "MLP_4"}
+      model_alias: {type: string, default: "champion"}
+    command: "python src/evaluate.py --model-name {model_name} --model-alias {model_alias} --data-version {data_version}"
+
+  validate:
+    parameters:
+      data_version: {type: string, default: "3.5c"}
+      model_name: {type: string, default: "MLP_4"}
+      model_alias: {type: string, default: ""}
+      model_version: {type: int, default: 2}
+      rmse_threshold: {type: float, default: 0.25}
+    command: "python src/validate.py --model-name {model_name} --model-alias {model_alias} --model-version {model_version} --data-version {data_version} --rmse-threshold {rmse_threshold}"
+  
+  validate_all:
+    parameters:
+      data_version: {type: string, default: "4.2c"}
+      model_name: {type: string, default: "ResNet"}
+      rmse_threshold: {type: float, default: 0.25}
+    command: "python src/validate.py --validate-all --model-name {model_name} --data-version {data_version} --rmse-threshold {rmse_threshold}"
+
+  transform:
+    command: "python src/transform_data.py"
+  
+  extract:
+    command: "airflow dags test data_extract"
+
+  deploy:
+    command: "scripts/deploy_docker.sh"
+
+  predict:
+    parameters:
+      example_version: 
+        type: string
+        default: "4.1c"
+      hostname:
+        type: string
+        default: "localhost"
+      port:
+        type: float
+        default: 5152
+      random_state:
+        type: float
+        default: 42
+      endpoint:
+        type: string
+        default: "invocations"
+    command: "python src/predict.py ++example_version={example_version} ++hostname={hostname} ++port={port} ++random_state={random_state} ++endpoint={endpoint}"
