@@ -45,8 +45,8 @@ def log_metadata(cfg, gs, X_train, y_train, X_test, y_test):
     best_metrics_keys = [metric for metric in gs.cv_results_]
     best_metrics_dict = {k:v for k,v in zip(best_metrics_keys, best_metrics_values) if 'mean' in k or 'std' in k}
 
-    df_train = pd.concat([X_train, y_train], axis = 1)
-    df_test = pd.concat([X_test, y_test], axis = 1)
+    df_train = pd.DataFrame(np.concatenate([X_train, y_train[:, np.newaxis]], axis=1))
+    df_test = pd.DataFrame(np.concatenate([X_test, y_test[:, np.newaxis]], axis=1))
 
     experiment_name = cfg.model.model_name + "_" + cfg.experiment_name
 
@@ -69,45 +69,55 @@ def log_metadata(cfg, gs, X_train, y_train, X_test, y_test):
         pass
 
     # Parent run
-    with mlflow.start_run(run_name = run_name, experiment_id = experiment_id) as run:
-        print("Logging dataset")
+    with mlflow.start_run(run_name = run_name, experiment_id = experiment_id):
         df_train_dataset = mlflow.data.pandas_dataset.from_pandas(df = df_train)
         df_test_dataset = mlflow.data.pandas_dataset.from_pandas(df = df_test)
         mlflow.log_input(df_train_dataset, "training")
         mlflow.log_input(df_test_dataset, "testing")
 
         # Log the hyperparameters
-        print("Logging best params")
         mlflow.log_params(gs.best_params_)
 
         # Log the performance metrics
-        print("Logging best metrics")
         mlflow.log_metrics(best_metrics_dict)
 
         # Set a tag that we can use to remind ourselves what this run was for
-        print("Setting tag")
         mlflow.set_tag(cfg.model.tag_key, cfg.model.tag_value)
 
         # Infer the model signature
-        print("Logging infer signature")
         signature = mlflow.models.infer_signature(X_train[0], gs.predict(X_train)[0])
 
         # Log the model
-        print("Logging the model")
         model_info = mlflow.sklearn.log_model(
             sk_model = gs.best_estimator_,
             artifact_path = cfg.model.artifact_path,
             signature = signature,
-            input_example = X_train.iloc[0].to_numpy(),
+            input_example = X_train[0],
             registered_model_name = cfg.model.model_name,
             pyfunc_predict_fn = cfg.model.pyfunc_predict_fn
         )
 
-        print("Setting the model version tag")
+        model_uri = model_info.model_uri
+        loaded_model = mlflow.sklearn.load_model(model_uri=model_uri)
+
+        predictions = loaded_model.predict(X_test) # type: ignore
+        eval_data = pd.DataFrame(y_test)
+        eval_data.columns = ["label"]
+        eval_data["predictions"] = predictions
+
+        results = mlflow.evaluate(
+            data=eval_data,
+            model_type="classifier",
+            targets="label",
+            predictions="predictions",
+            evaluators=["default"]
+        )
+
+        print(f"metrics:\n{results.metrics}")
+
         client = mlflow.client.MlflowClient()
         client.set_model_version_tag(name = cfg.model.model_name, version=model_info.registered_model_version, key="source", value="best_Grid_search_model")
 
-        print("Logging all gs results")
         for index, result in cv_results.iterrows():
             child_run_name = "_".join(['child', run_name, str(index)])
             with mlflow.start_run(run_name = child_run_name, experiment_id= experiment_id, nested=True):
@@ -117,29 +127,31 @@ def log_metadata(cfg, gs, X_train, y_train, X_test, y_test):
 
                 # Remove param_ from the beginning of the keys
                 ps = {k.replace("param_",""):v for (k,v) in ps.items()}
+                ps = {k.replace("module__",""):v for (k,v) in ps.items()}
 
-                print("Log child params")
                 mlflow.log_params(ps)
-                print("Log child metrics")
                 mlflow.log_metrics(ms)
-                print("Log child stds")
                 mlflow.log_metrics(stds)
 
                 # We will create the estimator at runtime
                 module_name = cfg.model.module_name
 
                 if module_name == "torch":
+                    num_layers = int(ps['num_layers'])
+                    hidden_size = int(ps['hidden_size'])
+                    lr = ps['lr']
                     device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
                     if device == "cuda" and torch.cuda.get_device_capability() == (8, 9):
                         torch.backends.cuda.matmul.allow_tf32 = True
                         torch.backends.cudnn.allow_tf32 = True
                     estimator = skorch.NeuralNetClassifier(
-                        MLP,
-                        max_epochs=10,
-                        criterion=torch.nn.CrossEntropyLoss(),
+                        MLP(num_layers=num_layers, hidden_size=hidden_size),
+                        max_epochs=50,
+                        criterion=torch.nn.CrossEntropyLoss,
                         device=device,
                         iterator_train__shuffle=True,
-                        optimizer=torch.optim.AdamW
+                        optimizer=torch.optim.AdamW,
+                        lr=lr
                     )
                 elif module_name.startswith("sklearn"):
                     class_name  = cfg.model.class_name
@@ -148,33 +160,27 @@ def log_metadata(cfg, gs, X_train, y_train, X_test, y_test):
                 else:
                     raise ValueError("This library is not supported")
 
-                print("Fit child model")
                 estimator.fit(X_train, y_train)
 
-                print("Log child infer signature")
                 signature = mlflow.models.infer_signature(X_train[0], estimator.predict(X_train)[0])
 
-                print("Log child model")
                 model_info = mlflow.sklearn.log_model(
                     sk_model = estimator,
                     artifact_path = cfg.model.artifact_path,
                     signature = signature,
-                    input_example = X_train.iloc[0].to_numpy(),
+                    input_example = X_train[0],
                     registered_model_name = cfg.model.model_name,
                     pyfunc_predict_fn = cfg.model.pyfunc_predict_fn
                 )
 
-                print("Load child model")
                 model_uri = model_info.model_uri
                 loaded_model = mlflow.sklearn.load_model(model_uri=model_uri)
 
-                print("Predict child model")
-                predictions = loaded_model.predict(X_test) # type: ignore
+                predictions = loaded_model.predict(X_test)
                 eval_data = pd.DataFrame(y_test)
                 eval_data.columns = ["label"]
                 eval_data["predictions"] = predictions
 
-                print("Evaluate child model")
                 results = mlflow.evaluate(
                     data=eval_data,
                     model_type="classifier",
@@ -202,8 +208,8 @@ def train(X_train, y_train, cfg):
             torch.backends.cudnn.allow_tf32 = True
         estimator = skorch.NeuralNetClassifier(
             MLP,
-            max_epochs=10,
-            criterion=torch.nn.CrossEntropyLoss(),
+            max_epochs=50,
+            criterion=torch.nn.CrossEntropyLoss,
             device=device,
             iterator_train__shuffle=True,
             optimizer=torch.optim.AdamW

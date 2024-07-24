@@ -6,3 +6,12 @@ entry_points:
   
   evaluate:
     command: "python src/evaluate.py"
+
+  validate:
+    command: "python src/validate.py"
+
+  transform:
+    command: ""
+
+  extract:
+    command: ""

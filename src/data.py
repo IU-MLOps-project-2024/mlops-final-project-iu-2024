@@ -36,7 +36,7 @@ def sample_data(cfg = None):
     sample.to_csv('~/Desktop/mlops-final-project-iu-2024/data/samples/sample.csv', index=False)
 
 def get_data_version(
-    config_file='/home/datapaf/Desktop/mlops-final-project-iu-2024/configs/data_version.yaml'
+    config_file='/home/aleksandr-vashchenko/Desktop/mlops-final-project-iu-2024/configs/data_version.yaml'
 ):
     with open(config_file, 'r') as file:
         config = yaml.safe_load(file)

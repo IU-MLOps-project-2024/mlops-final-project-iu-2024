@@ -9,7 +9,7 @@ cv_evaluation_metric: "mean_test_f1"
 pyfunc_predict_fn: "predict_proba"
 
 metrics:
-  # accuracy: "accuracy"
+  accuracy: "balanced_accuracy"
   f1: "f1_weighted"
-  # recall: "recall_weighted"
-  # precision: "precision_weighted"
+  recall: "recall_weighted"
+  precision: "precision_weighted"
