@@ -103,3 +103,26 @@ def validate_initial_data(csv_path, name_suit="my_expectation_suite"):
     validator.save_expectation_suite(
     	discard_failed_expectations = False
     )
+
+    batch_list = da.get_batch_list_from_batch_request(br)
+    batch_request_list = [batch.batch_request for batch in batch_list]
+
+    validations = [
+        {
+            "batch_request": batch.batch_request,
+            "expectation_suite_name": "my_expectation_suite"
+        }
+        for batch in batch_list
+    ]
+
+    checkpoint = context.add_or_update_checkpoint(
+        name="my_validator_checkpoint",
+        validations=validations
+    )
+
+    checkpoint_result = checkpoint.run()
+
+    assert checkpoint_result.success
+
+if __name__ == "__main__":
+    validate_initial_data('~/Desktop/mlops-final-project-iu-2024/data/samples/sample.csv')

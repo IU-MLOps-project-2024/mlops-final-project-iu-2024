@@ -24,29 +24,30 @@ data_valid=true
 if [ "$data_valid" = true ]; then
     # Version data with DVC
     dvc add "$data_path"
-    dvc commit -m "Versioning sample data"
+    # dvc commit -m "Versioning sample data"
+    dvc commit
 fi
 
-# Step 4: Git operations
-# Add changes to Git
-git add "$data_path.dvc"   # Assuming DVC creates a .dvc file for versioning
-git add "$data_path"       # Add original data file if needed
+# # Step 4: Git operations
+# # Add changes to Git
+# git add "$data_path.dvc"   # Assuming DVC creates a .dvc file for versioning
+# git add "$data_path"       # Add original data file if needed
 
-# Commit changes
-git commit -m "Update sample data"
+# # Commit changes
+# git commit -m "Update sample data"
 
-# Push changes to specified branch on GitHub
-git push origin "$branch"
+# # Push changes to specified branch on GitHub
+# git push origin "$branch"
 
-# Step 5: Tag the commit
-commit_hash=$(git rev-parse HEAD)
+# # Step 5: Tag the commit
+# commit_hash=$(git rev-parse HEAD)
 
-git tag -a "$tag_name" "$commit_hash" -m "Version $tag_name"
-git push origin "$tag_name"
+# git tag -a "$tag_name" "$commit_hash" -m "Version $tag_name"
+# git push origin "$tag_name"
 
-# Step 6: Push to DVC (assuming DVC remote is set up)
-if [ "$data_valid" = true ]; then
-    dvc push
-fi
+# # Step 6: Push to DVC (assuming DVC remote is set up)
+# if [ "$data_valid" = true ]; then
+#     dvc push
+# fi
 
-echo "Script execution completed."
+# echo "Script execution completed."

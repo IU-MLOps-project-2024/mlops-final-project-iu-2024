@@ -1,0 +1,7 @@
+data:
+  version: 1
+  remote: localstore
+  repo: .
+  path: data/raw/Test_Pandas.csv
+  sample_size: 0.2
+  random_state: 1

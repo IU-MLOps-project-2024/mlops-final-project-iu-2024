@@ -240,3 +240,4 @@ fabric.properties
 mlops_env/*
 mle_env/*
 datastore
+outputs/*

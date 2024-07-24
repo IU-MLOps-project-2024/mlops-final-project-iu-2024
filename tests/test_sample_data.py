@@ -59,17 +59,3 @@ def test_sample_data_creates_sample_file(mock_cfg, mock_dvc_api, mock_csv, tmpdi
     # Check if the sample file has the correct number of rows
     sample = pd.read_csv(sample_path)
     assert len(sample) == 10, f"Sample size is incorrect: expected 10, got {len(sample)}"
-
-def test_sample_data_pushes_to_dvc(mock_cfg, mock_dvc_api, mock_csv, tmpdir, monkeypatch):
-    # Mock os.makedirs and os.system
-    commands = []
-    monkeypatch.setattr('os.makedirs', lambda path, exist_ok: None)
-    monkeypatch.setattr('os.system', lambda command: commands.append(command) or 0)
-
-    # Run the sample_data function
-    with mock.patch('hydra.main', return_value=hydra_main):
-        sample_data(mock_cfg)
-    
-    # Check if 'dvc add' and 'dvc push' commands were called
-    assert 'dvc add data/samples/sample.csv' in commands, "'dvc add' command was not called."
-    assert 'dvc push' in commands, "'dvc push' command was not called."

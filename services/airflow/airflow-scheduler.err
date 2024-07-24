@@ -1,43 +1,10 @@
-Traceback (most recent call last):
-  File "/home/aleksandr-vashchenko/Repos/mlops-final-project-iu-2024/.venv/lib/python3.11/site-packages/lockfile/pidlockfile.py", line 77, in acquire
-    write_pid_to_pidfile(self.path)
-  File "/home/aleksandr-vashchenko/Repos/mlops-final-project-iu-2024/.venv/lib/python3.11/site-packages/lockfile/pidlockfile.py", line 161, in write_pid_to_pidfile
-    pidfile_fd = os.open(pidfile_path, open_flags, open_mode)
-                 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-FileExistsError: [Errno 17] File exists: '/home/aleksandr-vashchenko/Desktop/mlops-final-project-iu-2024/services/airflow/airflow-scheduler.pid'
-
-During handling of the above exception, another exception occurred:
-
-Traceback (most recent call last):
-  File "/home/aleksandr-vashchenko/Repos/mlops-final-project-iu-2024/.venv/bin/airflow", line 8, in <module>
-    sys.exit(main())
-             ^^^^^^
-  File "/home/aleksandr-vashchenko/Repos/mlops-final-project-iu-2024/.venv/lib/python3.11/site-packages/airflow/__main__.py", line 57, in main
-    args.func(args)
-  File "/home/aleksandr-vashchenko/Repos/mlops-final-project-iu-2024/.venv/lib/python3.11/site-packages/airflow/cli/cli_config.py", line 49, in command
-    return func(*args, **kwargs)
-           ^^^^^^^^^^^^^^^^^^^^^
-  File "/home/aleksandr-vashchenko/Repos/mlops-final-project-iu-2024/.venv/lib/python3.11/site-packages/airflow/utils/cli.py", line 114, in wrapper
-    return f(*args, **kwargs)
-           ^^^^^^^^^^^^^^^^^^
-  File "/home/aleksandr-vashchenko/Repos/mlops-final-project-iu-2024/.venv/lib/python3.11/site-packages/airflow/utils/providers_configuration_loader.py", line 55, in wrapped_function
-    return func(*args, **kwargs)
-           ^^^^^^^^^^^^^^^^^^^^^
-  File "/home/aleksandr-vashchenko/Repos/mlops-final-project-iu-2024/.venv/lib/python3.11/site-packages/airflow/cli/commands/scheduler_command.py", line 79, in scheduler
-    with ctx:
-  File "/home/aleksandr-vashchenko/Repos/mlops-final-project-iu-2024/.venv/lib/python3.11/site-packages/daemon/daemon.py", line 365, in __enter__
-    self.open()
-  File "/home/aleksandr-vashchenko/Repos/mlops-final-project-iu-2024/.venv/lib/python3.11/site-packages/daemon/daemon.py", line 357, in open
-    self.pidfile.__enter__()
-  File "/home/aleksandr-vashchenko/Repos/mlops-final-project-iu-2024/.venv/lib/python3.11/site-packages/lockfile/__init__.py", line 197, in __enter__
-    self.acquire()
-  File "/home/aleksandr-vashchenko/Repos/mlops-final-project-iu-2024/.venv/lib/python3.11/site-packages/daemon/pidfile.py", line 49, in acquire
-    super().acquire(timeout, *args, **kwargs)
-  File "/home/aleksandr-vashchenko/Repos/mlops-final-project-iu-2024/.venv/lib/python3.11/site-packages/lockfile/pidlockfile.py", line 87, in acquire
-    raise AlreadyLocked("%s is already locked" %
-lockfile.AlreadyLocked: /home/aleksandr-vashchenko/Desktop/mlops-final-project-iu-2024/services/airflow/airflow-scheduler.pid is already locked
-[2024-07-13 17:35:23 +0300] [21030] [INFO] Worker exiting (pid: 21030)
-[2024-07-13 17:35:23 +0300] [21029] [INFO] Worker exiting (pid: 21029)
-[2024-07-13 17:35:23 +0300] [21028] [INFO] Handling signal: term
-[2024-07-13 17:35:23 +0300] [21028] [INFO] Shutting down: Master
+[2024-07-18 20:40:14 +0300] [19507] [INFO] Starting gunicorn 22.0.0
+[2024-07-18 20:40:14 +0300] [19507] [INFO] Listening at: http://[::]:8793 (19507)
+[2024-07-18 20:40:14 +0300] [19507] [INFO] Using worker: sync
+[2024-07-18 20:40:14 +0300] [19508] [INFO] Booting worker with pid: 19508
+[2024-07-18 20:40:15 +0300] [19509] [INFO] Booting worker with pid: 19509
+[2024-07-18 21:39:17 +0300] [19508] [INFO] Worker exiting (pid: 19508)
+[2024-07-18 21:39:17 +0300] [19507] [INFO] Handling signal: term
+[2024-07-18 21:39:17 +0300] [19509] [INFO] Worker exiting (pid: 19509)
+[2024-07-18 21:39:17 +0300] [19507] [INFO] Shutting down: Master
 Terminating on signal 15
