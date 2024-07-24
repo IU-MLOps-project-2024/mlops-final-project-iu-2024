@@ -13,7 +13,7 @@ class MLP(torch.nn.Module):
 
     def forward(self, x):
         """Forward passing"""
-        x = torch.nn.ReLU(self.input(x))
+        x = torch.nn.functional.leaky_relu(self.input(x))
         for layer in self.layers:
-            x = torch.nn.ReLU(layer(x))
+            x = torch.nn.functional.leaky_relu(layer(x))
         return self.output(x)
