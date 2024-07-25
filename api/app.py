@@ -7,24 +7,26 @@ import mlflow.pyfunc
 import os
 
 import numpy as np
+import json
+import requests
 
 BASE_PATH = '/home/datapaf/Desktop/mlops-final-project-iu-2024'
 
-model = mlflow.pyfunc.load_model(os.path.join(BASE_PATH, "api", "model_dir"))
+# model = mlflow.pyfunc.load_model(os.path.join(BASE_PATH, "api", "model_dir"))
 
 app = Flask(__name__)
 
 @app.route("/info", methods = ["GET"])
 def info():
-
-	response = make_response(str(model.metadata), 200)
-	response.content_type = "text/plain"
-	return response
+	pass
+	# response = make_response(str(model.metadata), 200)
+	# response.content_type = "text/plain"
+	# return response
 
 @app.route("/", methods = ["GET"])
 def home():
 	msg = """
-	Welcome to our ML service to predict Customer satisfaction\n\n
+	Welcome to our ML service to predict commodities category\n\n
 
 	This API has two main endpoints:\n
 	1. /info: to get info about the deployed model.\n
@@ -42,8 +44,18 @@ def predict():
     try:
         data = request.json
         features = data["features"]
-        prediction = model.predict(np.array([features], dtype=np.float32))
-        return jsonify({"prediction": prediction.tolist()})
+        input_data = {
+			"inputs": [features]
+		}
+        # prediction = model.predict(np.array([features], dtype=np.float32))
+        response = requests.post(
+			url=f"http://localhost:5152/invocations",
+			data=json.dumps(input_data),
+			headers={"Content-Type": "application/json"},
+		)
+        # print(response.json())
+        return jsonify(response.json())
+        # return 
     except Exception as e:
         return jsonify({"error": str(e)}), 400
 

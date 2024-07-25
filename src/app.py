@@ -90,8 +90,10 @@ def predict(
     input_data = {"features": X.iloc[0, :].to_list()}
     response = requests.post(url, json=input_data)
     
+    # print(response.response)
+
     if response.status_code == 200:
-        prediction = response.json()["prediction"]
+        prediction = response.json()["predictions"]
         category_class = np.argmax(prediction, axis=1)
         category = encoder.inverse_transform(category_class)[0]
         return category
