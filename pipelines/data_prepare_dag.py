@@ -22,7 +22,7 @@ with DAG(
     default_args=default_args,
     description='DAG to run ZenML pipeline after data extraction is successful',
     schedule_interval=timedelta(minutes=5),
-    start_date=datetime.now(),
+    start_date=datetime(2024, 7, 24),
     catchup=False,
 ) as dag:
 

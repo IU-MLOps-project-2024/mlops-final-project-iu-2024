@@ -241,3 +241,5 @@ mlops_env/*
 mle_env/*
 datastore
 outputs/*
+mlruns/*
+multirun/*

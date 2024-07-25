@@ -1,17 +1,40 @@
-name: Predicting category of the item
+name: my_mlflow_project
+
+# entry_points:
+#   main:
+#     command: "python src/main.py"
+  
+#   evaluate:
+#     command: "python src/evaluate.py"
+
+#   validate:
+#     command: "python src/validate.py"
+
+#   transform:
+#     command: ""
+
+#   extract:
+#     command: ""
 
 entry_points:
-  main:
-    command: "python src/main.py"
-  
-  evaluate:
-    command: "python src/evaluate.py"
 
-  validate:
-    command: "python src/validate.py"
+  deploy:
+      command: "scripts/deploy_docker.sh"
 
-  transform:
-    command: ""
-
-  extract:
-    command: ""
+  predict:
+    parameters:
+      example_version: 
+        type: string
+        default: 0
+      hostname:
+        type: string
+        default: "localhost"
+      port:
+        type: float
+        default: 5152
+      random_state:
+        type: float
+        default: 1
+    
+    command: "python src/predict.py ++example_version={example_version} ++hostname={hostname} ++port={port} ++random_state={random_state}"
+    

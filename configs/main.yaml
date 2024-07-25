@@ -8,7 +8,8 @@ hydra:
   mode: MULTIRUN
   sweeper:
     params:
-      +model: "lr, dt, mlp"
+      # +model: "lr, dt, mlp"
+      +model: "dt"
 
 data:
   version: v1.0

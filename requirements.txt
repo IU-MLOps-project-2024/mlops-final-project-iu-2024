@@ -21,3 +21,4 @@ psycopg2-binary
 skorch
 --extra-index-url https://download.pytorch.org/whl/cu121
 torch
+gradio==3.0

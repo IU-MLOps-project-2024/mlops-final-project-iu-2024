@@ -26,13 +26,13 @@ def load_features(name, version, size = 1):
     df = l[version].load()
     df = df.sample(frac = size, random_state = 88)
 
-    print("size of df is ", df.shape)
-    print("df columns: ", df.columns)
+    # print("size of df is ", df.shape)
+    # print("df columns: ", df.columns)
 
     X = df[df.columns[:-1]].to_numpy(dtype=np.float32)
     y = df[df.columns[-1]].to_numpy()
 
-    print("shapes of X,y = ", X.shape, y.shape)
+    # print("shapes of X,y = ", X.shape, y.shape)
 
     return X, y
 
