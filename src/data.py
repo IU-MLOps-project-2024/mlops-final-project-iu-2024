@@ -54,69 +54,24 @@ def read_datastore():
     df = pd.read_csv('~/Desktop/mlops-final-project-iu-2024/data/samples/sample.csv')
     return df, data_version
 
-def preprocess_data(df, encode_target=True):
+def preprocess_data(df):
 
     def vectorize_text(name, text, max_features=None):
-        if os.path.exists(f'../vectorizer_{name}.pkl'):
-            with open(f'../vectorizer_{name}.pkl', 'rb') as file:
-                vectorizer = pickle.load(file)
-        else:
-            vectorizer = TfidfVectorizer(max_features=max_features)
-            vectorizer.fit(text)
-            with open(f'../vectorizer_{name}.pkl', 'wb') as file:
-                pickle.dump(vectorizer, file)
+        vectorizer = TfidfVectorizer(max_features=max_features)
+        vectorizer.fit(text)
+        with open(f'../vectorizer_{name}.pkl', 'wb') as file:
+            pickle.dump(vectorizer, file)
 
-        # if type(text) is pd.Series:
-        #     print(text[0])
-        #     output = vectorizer.transform([text[0]]).toarray()
-        #     print(output)
-        # else:
-        #     output = vectorizer.transform(text).toarray()        
-
-        # return output
-
-        print(text)
-        output = vectorizer.transform(["101% AUTHENTIC BASEBALL CAPS"]).toarray()
-        print(output)
-
-        return output
-
-    # def vectorize_text(name, text, max_features=None):
-    #     if os.path.exists(f'../vectorizer_{name}.pkl'):
-    #         print(f"loading ../vectorizer_{name}.pkl")
-    #         with open(f'../vectorizer_{name}.pkl', 'rb') as file:
-    #             vectorizer = pickle.load(file)
-    #     else:
-    #         vectorizer = TfidfVectorizer(max_features=max_features)
-    #         vectorizer.fit(text)
-    #         with open(f'../vectorizer_{name}.pkl', 'wb') as file:
-    #             pickle.dump(vectorizer, file)
-        
-
-    #     if type(text) is pd.Series:
-    #         print(text[0])
-    #         output = vectorizer.transform([text[0]]).toarray()
-    #         print(output)
-    #     else:
-    #         output = vectorizer.transform(text).toarray()        
-
-    #     return output
-
-    # print(df.columns)
+        return vectorizer.transform(text).toarray()
 
     # get rid of nan values
     df.loc[df['item_name'].isna(), 'item_name'] = ""
     df.loc[df['item_description'].isna(), 'item_description'] = ""
     df.loc[df['item_variation'].isna(), 'item_variation'] = ""
-    if encode_target:
-        df.dropna(inplace=True, subset=['category'])
+    df.dropna(inplace=True, subset=['category'])
 
     # scale continuous values
-    if os.path.exists('../scaler.pkl'):
-        with open('../scaler.pkl', 'rb') as file:
-            scaler = pickle.load(file)
-    else:
-        scaler = StandardScaler()
+    scaler = StandardScaler()
     
     scaler.fit(df[['price', 'stock']].to_numpy())
     df[['price', 'stock']] = scaler.transform(df[['price', 'stock']].to_numpy())
@@ -132,18 +87,13 @@ def preprocess_data(df, encode_target=True):
     df.drop(columns=['item_creation_date'], inplace=True)
 
     # assign labels to the target feature
-    if encode_target:
-        if os.path.exists('../encoder.pkl'):
-            with open('../encoder.pkl', 'rb') as file:
-                encoder = pickle.load(file)
-        else:
-            encoder = LabelEncoder()
+    encoder = LabelEncoder()
         
-        encoder.fit(df['category'].to_numpy())
-        df['category'] = encoder.transform(df['category'].to_numpy())
+    encoder.fit(df['category'].to_numpy())
+    df['category'] = encoder.transform(df['category'].to_numpy())
 
-        with open('../encoder.pkl', 'wb') as file:
-            pickle.dump(encoder, file)
+    with open('../encoder.pkl', 'wb') as file:
+        pickle.dump(encoder, file)
 
     # prepare X and y datasets
     numerical_features = [
@@ -151,10 +101,7 @@ def preprocess_data(df, encode_target=True):
         'is_preferred', 'sold_count', 'year', 'month', 'day'
     ]
     X = df[numerical_features].to_numpy()
-    if encode_target:
-        y = df['category'].to_numpy()
-    else:
-        y = None
+    y = df['category'].to_numpy()
 
     X = np.concatenate(
         (
@@ -167,10 +114,7 @@ def preprocess_data(df, encode_target=True):
     )
 
     X = pd.DataFrame(X, columns=[str(i) for i in range(X.shape[1])])
-    if encode_target:
-        y = pd.DataFrame(y, columns=['category'])
-    else:
-        y = None
+    y = pd.DataFrame(y, columns=['category'])
 
     return X, y
 
