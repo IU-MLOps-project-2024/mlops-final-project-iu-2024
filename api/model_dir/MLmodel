@@ -22,7 +22,7 @@ saved_input_example_info:
   format: tf-serving
   type: ndarray
 signature:
-  inputs: '[{"type": "tensor", "tensor-spec": {"dtype": "float32", "shape": [-1]}}]'
+  inputs: '[{"type": "tensor", "tensor-spec": {"dtype": "float32", "shape": [-1, 310]}}]'
   outputs: '[{"type": "long", "required": true}]'
   params: null
 utc_time_created: '2024-07-24 03:12:39.588022'

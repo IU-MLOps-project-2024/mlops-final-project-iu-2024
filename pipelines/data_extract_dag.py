@@ -27,7 +27,7 @@ dag = DAG(
     default_args=default_args,
     description='A simple data extraction pipeline',
     schedule_interval=timedelta(minutes=5),
-    start_date=datetime(2024, 7, 22),
+    start_date=datetime(2024, 7, 24),
     catchup=False,
 )
 

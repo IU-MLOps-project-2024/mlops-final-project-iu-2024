@@ -11,13 +11,16 @@ import zenml
 import yaml
 import subprocess
 
-from src.gx_checkpoint import validate_initial_data
+from gx_checkpoint import validate_initial_data
 from omegaconf import OmegaConf
 
 from sklearn.preprocessing import StandardScaler
 from sklearn.feature_extraction.text import TfidfVectorizer
 from sklearn.preprocessing import LabelEncoder
 import numpy as np
+
+import os
+import pickle
 
 @hydra.main(config_path="../configs", config_name = "main", version_base=None)
 def sample_data(cfg = None):
@@ -37,7 +40,7 @@ def sample_data(cfg = None):
     sample.to_csv('~/Desktop/mlops-final-project-iu-2024/data/samples/sample.csv', index=False)
 
 def get_data_version(
-    config_file='/home/aleksandr-vashchenko/Desktop/mlops-final-project-iu-2024/configs/data_version.yaml'
+    config_file='/home/datapaf/Desktop/mlops-final-project-iu-2024/configs/data_version.yaml'
 ):
     with open(config_file, 'r') as file:
         config = yaml.safe_load(file)
@@ -52,22 +55,75 @@ def read_datastore():
     df = pd.read_csv('~/Desktop/mlops-final-project-iu-2024/data/samples/sample.csv')
     return df, data_version
 
-def preprocess_data(df):
+def preprocess_data(df, encode_target=True):
 
-    def vectorize_text(text, max_features=None):
-        vectorizer = TfidfVectorizer(max_features=max_features)
-        return vectorizer.fit_transform(text).toarray()
+    def vectorize_text(name, text, max_features=None):
+        if os.path.exists(f'../vectorizer_{name}.pkl'):
+            with open(f'../vectorizer_{name}.pkl', 'rb') as file:
+                vectorizer = pickle.load(file)
+        else:
+            vectorizer = TfidfVectorizer(max_features=max_features)
+            vectorizer.fit(text)
+            with open(f'../vectorizer_{name}.pkl', 'wb') as file:
+                pickle.dump(vectorizer, file)
+
+        # if type(text) is pd.Series:
+        #     print(text[0])
+        #     output = vectorizer.transform([text[0]]).toarray()
+        #     print(output)
+        # else:
+        #     output = vectorizer.transform(text).toarray()        
+
+        # return output
+
+        print(text)
+        output = vectorizer.transform(["101% AUTHENTIC BASEBALL CAPS"]).toarray()
+        print(output)
+
+        return output
+
+    # def vectorize_text(name, text, max_features=None):
+    #     if os.path.exists(f'../vectorizer_{name}.pkl'):
+    #         print(f"loading ../vectorizer_{name}.pkl")
+    #         with open(f'../vectorizer_{name}.pkl', 'rb') as file:
+    #             vectorizer = pickle.load(file)
+    #     else:
+    #         vectorizer = TfidfVectorizer(max_features=max_features)
+    #         vectorizer.fit(text)
+    #         with open(f'../vectorizer_{name}.pkl', 'wb') as file:
+    #             pickle.dump(vectorizer, file)
+        
+
+    #     if type(text) is pd.Series:
+    #         print(text[0])
+    #         output = vectorizer.transform([text[0]]).toarray()
+    #         print(output)
+    #     else:
+    #         output = vectorizer.transform(text).toarray()        
+
+    #     return output
+
+    # print(df.columns)
 
     # get rid of nan values
     df.loc[df['item_name'].isna(), 'item_name'] = ""
     df.loc[df['item_description'].isna(), 'item_description'] = ""
     df.loc[df['item_variation'].isna(), 'item_variation'] = ""
-    df.dropna(inplace=True, subset=['category'])
+    if encode_target:
+        df.dropna(inplace=True, subset=['category'])
 
     # scale continuous values
-    scaler = StandardScaler()
+    if os.path.exists('../scaler.pkl'):
+        with open('../scaler.pkl', 'rb') as file:
+            scaler = pickle.load(file)
+    else:
+        scaler = StandardScaler()
+    
     scaler.fit(df[['price', 'stock']].to_numpy())
     df[['price', 'stock']] = scaler.transform(df[['price', 'stock']].to_numpy())
+
+    with open('../scaler.pkl', 'wb') as file:
+        pickle.dump(scaler, file)
 
     # break down item creation date
     df['item_creation_date'] = pd.to_datetime(df['item_creation_date'])
@@ -77,9 +133,18 @@ def preprocess_data(df):
     df.drop(columns=['item_creation_date'], inplace=True)
 
     # assign labels to the target feature
-    encoder = LabelEncoder()
-    encoder.fit(df['category'].to_numpy())
-    df['category'] = encoder.transform(df['category'].to_numpy())
+    if encode_target:
+        if os.path.exists('../encoder.pkl'):
+            with open('../encoder.pkl', 'rb') as file:
+                encoder = pickle.load(file)
+        else:
+            encoder = LabelEncoder()
+        
+        encoder.fit(df['category'].to_numpy())
+        df['category'] = encoder.transform(df['category'].to_numpy())
+
+        with open('../encoder.pkl', 'wb') as file:
+            pickle.dump(encoder, file)
 
     # prepare X and y datasets
     numerical_features = [
@@ -87,20 +152,26 @@ def preprocess_data(df):
         'is_preferred', 'sold_count', 'year', 'month', 'day'
     ]
     X = df[numerical_features].to_numpy()
-    y = df['category'].to_numpy()
+    if encode_target:
+        y = df['category'].to_numpy()
+    else:
+        y = None
 
     X = np.concatenate(
         (
             X,
-            vectorize_text(df['item_name'], max_features=100),
-            vectorize_text(df['item_description'], max_features=100),
-            vectorize_text(df['item_variation'], max_features=100)
+            vectorize_text('item_name', df['item_name'], max_features=100),
+            vectorize_text('item_description', df['item_description'], max_features=100),
+            vectorize_text('item_variation', df['item_variation'], max_features=100)
         ),
         axis=1
     )
 
     X = pd.DataFrame(X, columns=[str(i) for i in range(X.shape[1])])
-    y = pd.DataFrame(y, columns=['category'])
+    if encode_target:
+        y = pd.DataFrame(y, columns=['category'])
+    else:
+        y = None
 
     return X, y
 
