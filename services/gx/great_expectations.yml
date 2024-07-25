@@ -105,6 +105,12 @@ fluent_datasources:
       asset01:
         type: csv
         filepath_or_buffer: ~/Desktop/mlops-final-project-iu-2024/data/samples/sample.csv
+  transformed_data:
+    type: pandas
+    assets:
+      transformed_dataframe_asset:
+        type: dataframe
+        batch_metadata: {}
 notebooks:
 include_rendered_content:
   globally: false

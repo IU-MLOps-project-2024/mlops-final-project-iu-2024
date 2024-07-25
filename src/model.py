@@ -20,10 +20,10 @@ from models.mlp import MLP
 def load_features(name, version, size = 1):
     """Load features"""
     client = Client()
-    l = client.list_artifact_versions(name = name, sort_by="version").items
+    l = client.list_artifact_versions(name = name, sort_by="version", tag=version).items
     l.reverse()
 
-    df = l[version].load()
+    df = l[0].load()
     df = df.sample(frac = size, random_state = 88)
 
     # print("size of df is ", df.shape)
@@ -84,7 +84,7 @@ def log_metadata(cfg, gs, X_train, y_train, X_test, y_test):
         mlflow.set_tag(cfg.model.tag_key, cfg.model.tag_value)
 
         # Infer the model signature
-        signature = mlflow.models.infer_signature(X_train[0], gs.predict(X_train)[0])
+        signature = mlflow.models.infer_signature(X_train[0:4], gs.predict(X_train[0:4]))
 
         # Log the model
         model_info = mlflow.sklearn.log_model(
@@ -99,7 +99,7 @@ def log_metadata(cfg, gs, X_train, y_train, X_test, y_test):
         model_uri = model_info.model_uri
         loaded_model = mlflow.sklearn.load_model(model_uri=model_uri)
 
-        predictions = loaded_model.predict(X_test) # type: ignore
+        predictions = loaded_model.predict(X_test)
         eval_data = pd.DataFrame(y_test)
         eval_data.columns = ["label"]
         eval_data["predictions"] = predictions
@@ -124,7 +124,6 @@ def log_metadata(cfg, gs, X_train, y_train, X_test, y_test):
                 ms = result.filter(regex='mean_').to_dict()
                 stds = result.filter(regex='std_').to_dict()
 
-                # Remove param_ from the beginning of the keys
                 ps = {k.replace("param_",""):v for (k,v) in ps.items()}
                 ps = {k.replace("module__",""):v for (k,v) in ps.items()}
 
@@ -145,7 +144,7 @@ def log_metadata(cfg, gs, X_train, y_train, X_test, y_test):
                         torch.backends.cudnn.allow_tf32 = True
                     estimator = skorch.NeuralNetClassifier(
                         MLP(num_layers=num_layers, hidden_size=hidden_size),
-                        max_epochs=50,
+                        max_epochs=10,
                         criterion=torch.nn.CrossEntropyLoss,
                         device=device,
                         iterator_train__shuffle=True,
@@ -161,7 +160,7 @@ def log_metadata(cfg, gs, X_train, y_train, X_test, y_test):
 
                 estimator.fit(X_train, y_train)
 
-                signature = mlflow.models.infer_signature(X_train[0], estimator.predict(X_train)[0])
+                signature = mlflow.models.infer_signature(X_train[0:4], estimator.predict(X_train[0:4]))
 
                 model_info = mlflow.sklearn.log_model(
                     sk_model = estimator,
@@ -207,7 +206,7 @@ def train(X_train, y_train, cfg):
             torch.backends.cudnn.allow_tf32 = True
         estimator = skorch.NeuralNetClassifier(
             MLP,
-            max_epochs=50,
+            max_epochs=10,
             criterion=torch.nn.CrossEntropyLoss,
             device=device,
             iterator_train__shuffle=True,

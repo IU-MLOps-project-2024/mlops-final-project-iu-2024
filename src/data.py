@@ -31,11 +31,12 @@ def sample_data(cfg = None):
         repo=cfg.data.repo,
         rev=cfg.data.version
     )
+    version = cfg.version
     sample_size = cfg.data.sample_size
 
     # Take a sample of the data
     data = pd.read_csv(data_url)
-    sample = data.iloc[:int(len(data) * sample_size)]
+    sample = data.iloc[int(len(data) * sample_size * (version - 1)):int(len(data) * sample_size * version)]
     sample.to_csv('~/Desktop/mlops-final-project-iu-2024/data/samples/sample.csv', index=False)
 
 def get_data_version(
