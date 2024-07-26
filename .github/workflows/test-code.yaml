@@ -5,28 +5,52 @@ on:
     branches:
       - main
       - master
-  pull_request:
-    branches:
-      - main
-      - master
+      - dev
+  paths:
+    - 'src'
+    - 'scripts'
+  schedule:
+    - cron '*/5 * * * *'
+
+permissions:
+  contents: read
 
 jobs:
-  test:
+  test-code:
+    
     runs-on: ubuntu-latest
+
+    defaults:
+      run:
+        shell: bash
+        working-directory: .
 
     steps:
     - name: Checkout code
-      uses: actions/checkout@v2
+      uses: actions/checkout@v4
 
     - name: Set up Python
-      uses: actions/setup-python@v2
+      uses: actions/setup-python@v5
       with:
-        python-version: '3.9'
+        python-version: '3.11.0'
+        cache: 'pip'
+
 
     - name: Install dependencies
       run: |
-        python -m pip install --upgrade pip
-        pip install -r requirements.txt
+        python3.11 -m pip install --upgrade pip
+        pip3.11 install -r requirements.txt
+
+    - name: Export variables
+      run: | 
+        echo $PWD
+        export ZENML_CONFIG_PATH=$PWD/services/zenml
+        export PROJECTPATH=$PWD
+        export AIRFLOW_HOME=$PWD/services/airflow
+        export PYTHONPATH=$PWD/src
+
+    - name: Run ZenML server  
+      run: zenml down && zenml up
 
     - name: Run tests
       run: |
