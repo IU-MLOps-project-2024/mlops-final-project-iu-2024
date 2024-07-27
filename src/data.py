@@ -13,6 +13,7 @@ import subprocess
 
 from gx_checkpoint import validate_initial_data
 from omegaconf import OmegaConf
+from omegaconf import DictConfig
 
 from sklearn.preprocessing import StandardScaler
 from sklearn.feature_extraction.text import TfidfVectorizer
@@ -22,26 +23,26 @@ import numpy as np
 import os
 import pickle
 
-@hydra.main(config_path="../configs", config_name = "main", version_base=None)
-def sample_data(cfg = None):
-    """Main function of script"""
+from hydra import compose, initialize
+
+def sample_data():
+    
+    with initialize(config_path="../configs"):
+        cfg = compose(config_name="main")
+    
     data_url = dvc.api.get_url(
         path=cfg.data.path,
         remote=cfg.data.remote,
         repo=cfg.data.repo,
         rev=cfg.data.version
     )
-    # version = cfg.version
-    sample_size = cfg.data.sample_size
+    
+    data = pd.read_csv(data_url)
 
     # Take a sample of the data
-    data = pd.read_csv(data_url)
+    sample_size = cfg.data.sample_size
     sample = data.sample(frac=sample_size)
-    # sample = data.iloc[
-    #     int(len(data) * sample_size * (version - 1)):
-    #     int(len(data) * sample_size * version)
-    # ]
-    # print(sample)
+
     sample.to_csv('~/Desktop/mlops-final-project-iu-2024/data/samples/sample.csv', index=False)
 
 def get_data_version(
@@ -195,8 +196,10 @@ def load_features(X, y, data_version):
 def validate_sample(**kwargs):
     validate_initial_data("~/Desktop/mlops-final-project-iu-2024/data/samples/sample.csv")
 
-@hydra.main(config_path="../configs", config_name="data_version", version_base=None)
-def version_sample(cfg=None):
+def version_sample():
+
+    with initialize(config_path="../configs"):
+        cfg = compose(config_name="data_version")
 
     cfg.version += 1
     OmegaConf.save(cfg, "configs/data_version.yaml")

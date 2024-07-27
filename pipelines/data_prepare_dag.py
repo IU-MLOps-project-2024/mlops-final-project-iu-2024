@@ -1,48 +1,33 @@
-from datetime import datetime, timedelta
+from pendulum import datetime
+from datetime import timedelta
+
 from airflow import DAG
-from airflow.sensors.external_task_sensor import ExternalTaskSensor
-from airflow.operators.bash_operator import BashOperator
-from airflow.utils.trigger_rule import TriggerRule
+from airflow.decorators import dag
+from airflow.operators.bash import BashOperator
+from airflow.sensors.external_task import ExternalTaskSensor
 from airflow.operators.trigger_dagrun import TriggerDagRunOperator
+from airflow.utils.trigger_rule import TriggerRule
 
 
-# Define default_args
-default_args = {
-    'owner': 'airflow',
-    'depends_on_past': False,
-    'email_on_failure': False,
-    'email_on_retry': False,
-    'retries': 1,
-    'retry_delay': timedelta(minutes=5),
-}
+with DAG(dag_id="data_prepare_dag",
+         start_date=datetime(2024, 7, 24, tz="UTC"),
+         schedule="*/10 * * * *",
+         catchup=False) as dag:
 
-# Define the DAG
-with DAG(
-    'data_prepare_dag',
-    default_args=default_args,
-    description='DAG to run ZenML pipeline after data extraction is successful',
-    schedule_interval=timedelta(minutes=5),
-    start_date=datetime(2024, 7, 24),
-    catchup=False,
-) as dag:
-
-    wait_for_data_extraction = ExternalTaskSensor(
-        task_id='wait_for_data_extraction',
-        external_dag_id='data_extract_dag',
-        external_task_id="load_sample_to_dvc_remote",
-        timeout=600
+    data_extract = TriggerDagRunOperator(
+        task_id='trigger_data_extract_dag',
+        trigger_dag_id='data_extract_dag',
+        start_date=datetime(2024, 7, 24)
     )
 
     run_zenml_pipeline = BashOperator(
         task_id='run_zenml_pipeline',
-        bash_command='zenml pipeline run data_prepare_pipeline',
+        bash_command='cd ~/Desktop/mlops-final-project-iu-2024/pipelines; zenml pipeline run data_prepare_pipeline ',
         trigger_rule=TriggerRule.ALL_SUCCESS,
+        dag=dag,
     )
 
-    # Set task dependencies
-    wait_for_data_extraction >> run_zenml_pipeline
+    data_extract >> run_zenml_pipeline
 
 if __name__ == "__main__":
     dag.test()
-
-
