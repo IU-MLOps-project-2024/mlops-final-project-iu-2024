@@ -243,3 +243,4 @@ datastore
 outputs/*
 mlruns/*
 multirun/*
+tests/outputs/*

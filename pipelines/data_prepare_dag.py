@@ -30,7 +30,7 @@ with DAG(
         task_id='wait_for_data_extraction',
         external_dag_id='data_extract_dag',
         external_task_id="load_sample_to_dvc_remote",
-        timeout=300
+        timeout=600
     )
 
     run_zenml_pipeline = BashOperator(

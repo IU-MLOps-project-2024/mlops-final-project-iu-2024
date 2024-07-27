@@ -1,14 +1,13 @@
 name: Test Code
-
 on:
   push:
     branches:
       - main
       - master
       - dev
-  paths:
-    - 'src'
-    - 'scripts'
+    paths:
+      - 'src'
+      - 'scripts'
   schedule:
     - cron '*/5 * * * *'
 
@@ -41,17 +40,18 @@ jobs:
         python3.11 -m pip install --upgrade pip
         pip3.11 install -r requirements.txt
 
-    - name: Export variables
-      run: | 
-        echo $PWD
-        export ZENML_CONFIG_PATH=$PWD/services/zenml
-        export PROJECTPATH=$PWD
-        export AIRFLOW_HOME=$PWD/services/airflow
-        export PYTHONPATH=$PWD/src
+    # - name: Export variables
+    #   run: | 
+    #     echo $PWD
+    #     export ZENML_CONFIG_PATH=$PWD/services/zenml
+    #     export PROJECTPATH=$PWD
+    #     export AIRFLOW_HOME=$PWD/services/airflow
+    #     export PYTHONPATH=$PWD/src
 
-    - name: Run ZenML server  
-      run: zenml down && zenml up
+    # - name: Run ZenML server  
+    #   run: zenml down && zenml up
 
     - name: Run tests
       run: |
-        pytest tests
+        cd tests
+        pytest

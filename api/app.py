@@ -12,16 +12,15 @@ import requests
 
 BASE_PATH = '/home/datapaf/Desktop/mlops-final-project-iu-2024'
 
-# model = mlflow.pyfunc.load_model(os.path.join(BASE_PATH, "api", "model_dir"))
+model = mlflow.pyfunc.load_model(os.path.join(BASE_PATH, "api", "model_dir"))
 
 app = Flask(__name__)
 
 @app.route("/info", methods = ["GET"])
 def info():
-	pass
-	# response = make_response(str(model.metadata), 200)
-	# response.content_type = "text/plain"
-	# return response
+	response = make_response(str(model.metadata), 200)
+	response.content_type = "text/plain"
+	return response
 
 @app.route("/", methods = ["GET"])
 def home():

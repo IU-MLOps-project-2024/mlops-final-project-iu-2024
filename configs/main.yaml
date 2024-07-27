@@ -1,15 +1,15 @@
-defaults:
-  - _self_
-  - data_version
-  - model/model
-  - experiment
+# defaults:
+#   - _self_
+#   - data_version
+#   - model/model
+#   - experiment
 
-hydra:
-  mode: MULTIRUN
-  sweeper:
-    params:
-      # +model: "lr, dt, mlp"
-      +model: "dt"
+# hydra:
+#   mode: MULTIRUN
+#   sweeper:
+#     params:
+#       # +model: "lr, dt, mlp"
+#       +model: "dt"
 
 data:
   version: v1.0
