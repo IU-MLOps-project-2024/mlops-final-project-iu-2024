@@ -6,8 +6,12 @@ on:
       - master
       - dev
     paths:
-      - 'src'
-      - 'scripts'
+      - 'src/**'
+      - 'scripts/**'
+      - 'pipelines/**'
+      - 'tests/**'
+      - 'configs/**'
+      - '.github/**'
     schedule:
       - cron: '*/5 * * * *'
 
@@ -27,12 +31,14 @@ jobs:
     steps:
     - name: Checkout code
       uses: actions/checkout@v4
+      with:
+        repository: 'IU-MLOps-project-2024/mlops-final-project-iu-2024'
 
     - name: Set up Python
       uses: actions/setup-python@v5
       with:
         python-version: '3.11.0'
-        cache: 'pip'
+        # cache: 'pip'
 
 
     - name: Install dependencies
