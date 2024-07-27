@@ -8,8 +8,6 @@ on:
     paths:
       - 'src'
       - 'scripts'
-  schedule:
-    - cron '*/5 * * * *'
 
 permissions:
   contents: read
