@@ -52,6 +52,4 @@ jobs:
     #   run: zenml down && zenml up
 
     - name: Run tests
-      run: |
-        cd tests
-        pytest
+      run: cd tests; pytest .
