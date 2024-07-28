@@ -118,6 +118,8 @@ def preprocess_data(df):
 
     scaler2 = StandardScaler()
     X = scaler2.fit_transform(X)
+    with open('../scaler2.pkl', 'wb') as file:
+        pickle.dump(scaler2, file)
 
     X = pd.DataFrame(X, columns=[str(i) for i in range(X.shape[1])])
     y = pd.DataFrame(y, columns=['category'])

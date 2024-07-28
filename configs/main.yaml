@@ -1,15 +1,14 @@
-# defaults:
-#   - _self_
-#   - data_version
-#   - model/model
-#   - experiment
+defaults:
+  - _self_
+  - data_version
+  - model/model
+  - experiment
 
 hydra:
   mode: MULTIRUN
   sweeper:
     params:
-      # +model: "lr, dt, mlp, transformer"
-      +model: "transformer"
+      +model: "lr, dt, mlp, transformer"
 
 data:
   version: v1.0
@@ -27,3 +26,11 @@ paths:
 datasets:
   target_col: "category"
 
+reproducibility:
+  seeds:
+    - 42
+    - 0
+    - 1
+    - 777
+    - 7
+    - 25
