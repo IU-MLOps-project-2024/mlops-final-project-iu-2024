@@ -21,7 +21,7 @@ data:
   labels: 
 
 paths:
-  root_path: /home/aleksandr-vashchenko/Desktop/mlops-final-project-iu-2024
+  root_path: /home/datapaf/Desktop/mlops-final-project-iu-2024
 
 datasets:
   target_col: "category"

@@ -13,6 +13,7 @@ import numpy as np
 # from sklearn.preprocessing import LabelEncoder
 
 scaler = pickle.load(open('scaler.pkl', 'rb'))
+scaler2 = pickle.load(open('scaler2.pkl', 'rb'))
 encoder = pickle.load(open('encoder.pkl', 'rb'))
 vectorizer_item_description = pickle.load(open('vectorizer_item_description.pkl', 'rb'))
 vectorizer_item_name = pickle.load(open('vectorizer_item_name.pkl', 'rb'))
@@ -50,6 +51,8 @@ def preprocess_data(df):
         ),
         axis=1
     )
+
+    X = scaler2.transform(X)
 
     X = pd.DataFrame(X, columns=[str(i) for i in range(X.shape[1])])
 

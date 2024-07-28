@@ -2,23 +2,24 @@
 
 from flask import Flask, request, jsonify, abort, make_response
 
-import mlflow
-import mlflow.pyfunc
+# import mlflow
+# import mlflow.pyfunc
 import os
 
 import numpy as np
 import json
 import requests
 
-BASE_PATH = '/home/datapaf/Desktop/mlops-final-project-iu-2024'
-
-model = mlflow.pyfunc.load_model(os.path.join(BASE_PATH, "api", "model_dir"))
+# model_path = "model"
+# model = mlflow.pyfunc.load_model(model_path)
 
 app = Flask(__name__)
 
 @app.route("/info", methods = ["GET"])
 def info():
-	response = make_response(str(model.metadata), 200)
+	with open('/home/datapaf/Desktop/mlops-final-project-iu-2024/api/model_dir/MLmodel') as f:
+		metadata = f.read()
+	response = make_response(metadata, 200)
 	response.content_type = "text/plain"
 	return response
 
@@ -40,23 +41,21 @@ def home():
 # /predict endpoint
 @app.route("/predict", methods = ["POST"])
 def predict():
-    try:
-        data = request.json
-        features = data["features"]
-        input_data = {
-			"inputs": [features]
-		}
-        # prediction = model.predict(np.array([features], dtype=np.float32))
-        response = requests.post(
-			url=f"http://localhost:5152/invocations",
-			data=json.dumps(input_data),
-			headers={"Content-Type": "application/json"},
-		)
-        # print(response.json())
-        return jsonify(response.json())
-        # return 
-    except Exception as e:
-        return jsonify({"error": str(e)}), 400
+    # try:
+	data = request.json
+	features = data["features"]
+	input_data = {
+		"inputs": [features]
+	}
+	response = requests.post(
+		url=f"http://localhost:5152/invocations",
+		data=json.dumps(input_data),
+		headers={"Content-Type": "application/json"},
+	)
+	return jsonify(response.json())
+    # except Exception as e:
+	# 	print(e)
+	# 	return jsonify({"error": str(e)}), 400
 
 # This will run a local server to accept requests to the API.
 if __name__ == "__main__":
