@@ -1,8 +1,8 @@
-defaults:
-  - _self_
-  - data_version
-  - model/model
-  - experiment
+# defaults:
+#   - _self_
+#   - data_version
+#   - model/model
+#   - experiment
 
 hydra:
   mode: MULTIRUN

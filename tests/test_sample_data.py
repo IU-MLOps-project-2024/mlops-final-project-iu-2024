@@ -53,7 +53,7 @@ def test_sample_data_creates_sample_file(mock_cfg, mock_dvc_api, mock_csv, tmpdi
         sample_data(mock_cfg)
 
     # Check if the sample file is created
-    sample_path = 'data/samples/sample.csv'
+    sample_path = '/home/datapaf/Desktop/mlops-final-project-iu-2024/data/samples/sample.csv'
     assert os.path.exists(sample_path), f"{sample_path} does not exist."
 
     # Check if the sample file has the correct number of rows
