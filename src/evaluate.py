@@ -1,7 +1,6 @@
 import argparse
 
 import mlflow
-import numpy as np
 import sklearn
 import sklearn.metrics
 from model import load_features
@@ -58,7 +57,7 @@ def main():
     parser = argparse.ArgumentParser()
     parser.add_argument("--model-name", type=str, default="DecisionTreeClassifier")
     parser.add_argument("--model-alias", type=str, default="champion")
-    parser.add_argument("--data-version", type=int, default=0)
+    parser.add_argument("--data-version", type=int, default=5)
     args = parser.parse_args()
     evaluate(args.data_version, args.model_name, args.model_alias)
 

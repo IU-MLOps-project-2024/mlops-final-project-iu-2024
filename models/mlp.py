@@ -17,3 +17,23 @@ class MLP(torch.nn.Module):
         for layer in self.layers:
             x = torch.nn.functional.leaky_relu(layer(x))
         return self.output(x)
+
+
+class SimpleTransformer(torch.nn.Module):
+    """Class with simple transformer"""
+    def __init__(self, input_dim=310, num_classes=20, num_heads=5, num_encoder_layers=2, dropout=0.1):
+        super().__init__()
+        self.transformer = torch.nn.TransformerEncoder(
+            torch.nn.TransformerEncoderLayer(d_model=input_dim, nhead=num_heads, dropout=dropout),
+            num_layers=num_encoder_layers
+        )
+        self.fc = torch.nn.Linear(input_dim, num_classes)
+
+    def forward(self, x):
+        """Forward passing"""
+        x = x.unsqueeze(1)
+        x = x.transpose(0, 1)
+        x = self.transformer(x)
+        x = x.mean(dim=0)
+        x = self.fc(x)
+        return x

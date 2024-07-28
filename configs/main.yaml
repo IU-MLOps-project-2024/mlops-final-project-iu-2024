@@ -8,8 +8,8 @@ hydra:
   mode: MULTIRUN
   sweeper:
     params:
-      # +model: "lr, dt, mlp"
-      +model: "dt"
+      # +model: "lr, dt, mlp, transformer"
+      +model: "transformer"
 
 data:
   version: v1.0
@@ -18,3 +18,12 @@ data:
   path: data/raw/Test_Pandas.csv
   sample_size: 0.2
   random_state: 1
+  target_col: category
+  labels: 
+
+paths:
+  root_path: /home/aleksandr-vashchenko/Desktop/mlops-final-project-iu-2024
+
+datasets:
+  target_col: "category"
+

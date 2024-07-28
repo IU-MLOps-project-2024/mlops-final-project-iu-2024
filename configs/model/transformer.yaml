@@ -1,0 +1,13 @@
+model_name: Transformer
+artifact_path: basic_transformer
+
+tag_key: "model"
+tag_value: "basic Transformer"
+
+module_name: "torch"
+class_name: "SimpleTransformer"
+
+params:
+  module__num_heads: [2, 5, 10]
+  module__num_encoder_layers: [1, 2, 3]
+  lr: [0.01, 0.001, 0.0001]

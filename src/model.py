@@ -15,7 +15,7 @@ import numpy as np
 
 sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), '..')))
 
-from models.mlp import MLP
+from models.mlp import MLP, SimpleTransformer
 
 def load_features(name, version, size = 1):
     """Load features"""
@@ -26,13 +26,8 @@ def load_features(name, version, size = 1):
     df = l[0].load()
     df = df.sample(frac = size, random_state = 88)
 
-    # print("size of df is ", df.shape)
-    # print("df columns: ", df.columns)
-
     X = df[df.columns[:-1]].to_numpy(dtype=np.float32)
     y = df[df.columns[-1]].to_numpy()
-
-    # print("shapes of X,y = ", X.shape, y.shape)
 
     return X, y
 
@@ -133,17 +128,26 @@ def log_metadata(cfg, gs, X_train, y_train, X_test, y_test):
 
                 # We will create the estimator at runtime
                 module_name = cfg.model.module_name
+                class_name = cfg.model.class_name
 
                 if module_name == "torch":
-                    num_layers = int(ps['num_layers'])
-                    hidden_size = int(ps['hidden_size'])
+                    if class_name == "MLP":
+                        num_layers = int(ps['num_layers'])
+                        hidden_size = int(ps['hidden_size'])
+                        model = MLP(num_layers=num_layers, hidden_size=hidden_size)
+                    elif class_name == "SimpleTransformer":
+                        num_encoder_layers = int(ps['num_encoder_layers'])
+                        num_heads = int(ps['num_heads'])
+                        model = SimpleTransformer(num_encoder_layers=num_encoder_layers, num_heads=num_heads)
+                    else:
+                        raise ValueError("No such model")
                     lr = ps['lr']
                     device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
                     if device == "cuda" and torch.cuda.get_device_capability() == (8, 9):
                         torch.backends.cuda.matmul.allow_tf32 = True
                         torch.backends.cudnn.allow_tf32 = True
                     estimator = skorch.NeuralNetClassifier(
-                        MLP(num_layers=num_layers, hidden_size=hidden_size),
+                        model,
                         max_epochs=10,
                         criterion=torch.nn.CrossEntropyLoss,
                         device=device,
@@ -197,15 +201,22 @@ def train(X_train, y_train, cfg):
 
     # Train the model
     module_name = cfg.model.module_name
+    class_name = cfg.model.class_name
 
     if module_name == "torch":
+        if class_name == "MLP":
+            model = MLP
+        elif class_name == "SimpleTransformer":
+            model = SimpleTransformer
+        else:
+            raise ValueError("No such model")
         device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
         if device == "cuda" and torch.cuda.get_device_capability() == (8, 9):
             # Some optimization for my GPU
             torch.backends.cuda.matmul.allow_tf32 = True
             torch.backends.cudnn.allow_tf32 = True
         estimator = skorch.NeuralNetClassifier(
-            MLP,
+            model,
             max_epochs=10,
             criterion=torch.nn.CrossEntropyLoss,
             device=device,
@@ -213,7 +224,6 @@ def train(X_train, y_train, cfg):
             optimizer=torch.optim.AdamW
         )
     elif module_name.startswith("sklearn"):
-        class_name  = cfg.model.class_name
         class_instance = getattr(importlib.import_module(module_name), class_name)
         estimator = class_instance(**params)
     else:

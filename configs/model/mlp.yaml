@@ -5,6 +5,7 @@ tag_key: "model"
 tag_value: "basic MLP"
 
 module_name: "torch"
+class_name: "MLP"
 
 params:
   module__hidden_size: [512, 768, 1024]

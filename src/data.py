@@ -36,11 +36,11 @@ def sample_data(cfg = None):
 
     # Take a sample of the data
     data = pd.read_csv(data_url)
-    sample = data.iloc[int(len(data) * sample_size * (version - 1)):int(len(data) * sample_size * version)]
+    sample = data.iloc[:int(len(data) * sample_size * version)]
     sample.to_csv('~/Desktop/mlops-final-project-iu-2024/data/samples/sample.csv', index=False)
 
 def get_data_version(
-    config_file='/home/datapaf/Desktop/mlops-final-project-iu-2024/configs/data_version.yaml'
+    config_file='/home/aleksandr-vashchenko/Desktop/mlops-final-project-iu-2024/configs/data_version.yaml'
 ):
     with open(config_file, 'r') as file:
         config = yaml.safe_load(file)
@@ -113,6 +113,9 @@ def preprocess_data(df):
         ),
         axis=1
     )
+
+    scaler2 = StandardScaler()
+    X = scaler2.fit_transform(X)
 
     X = pd.DataFrame(X, columns=[str(i) for i in range(X.shape[1])])
     y = pd.DataFrame(y, columns=['category'])

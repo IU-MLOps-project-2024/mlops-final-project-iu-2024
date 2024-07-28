@@ -1,6 +1,12 @@
 """Test"""
 import hydra
+import sklearn.datasets
+import sklearn.model_selection
 from model import train, load_features, log_metadata
+
+import pandas as pd
+import sklearn
+import numpy as np
 
 
 def run(args):

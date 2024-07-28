@@ -8,6 +8,8 @@ cv_evaluation_metric: "mean_test_f1"
 
 pyfunc_predict_fn: "predict_proba"
 
+num_challengers: 5
+
 metrics:
   accuracy: "balanced_accuracy"
   f1: "f1_weighted"
