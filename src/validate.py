@@ -19,17 +19,15 @@ def create_giskard_dataset(data_version, cfg):
 
     giskard_dataset = giskard.Dataset(
         df=df,
-        target=311,
+        target=target_col,
         name=dataset_name,
         # cat_columns=df.columns[:-1].to_list()
     )
-    print("\n\n\n\n\n\n\n\n\n")
-    print(giskard_dataset.columns)
 
     return giskard_dataset, df
 
 
-def load_model(model_name, model_version, feature_cols, cfg):
+def load_model(model_name, model_version, cfg):
     model_uri = f"models:/{model_name}/{model_version}"
     model = mlflow.sklearn.load_model(model_uri=model_uri)
 
@@ -92,11 +90,7 @@ def validate_model(model_name, model_alias, model_version,
         print(client.get_latest_versions(model_name))
         model_version = client.get_model_version_by_alias(model_name, model_alias).version
 
-    feature_cols = giskard_dataset.df.columns.tolist()
-    target_col = cfg.datasets.target_col
-    feature_cols.remove(target_col)
-
-    giskard_model = load_model(model_name, model_version, feature_cols, cfg)
+    giskard_model = load_model(model_name, model_version, cfg)
     scan = run_giskard_scan(giskard_model, giskard_dataset, model_name, model_version, data_version, cfg)
     test_results = run_giskard_tests(giskard_model, giskard_dataset, model_name, model_version,
                                      data_version, f1_threshold)
