@@ -15,13 +15,16 @@ def create_giskard_dataset(data_version, cfg):
     dataset_name = f"sample_{data_version}_giskard"
 
     df = pd.DataFrame(X_test)
-    df[target_col] = y_test
+    df[311] = y_test
 
     giskard_dataset = giskard.Dataset(
         df=df,
-        target=target_col,
-        name=dataset_name
+        target=311,
+        name=dataset_name,
+        # cat_columns=df.columns[:-1].to_list()
     )
+    print("\n\n\n\n\n\n\n\n\n")
+    print(giskard_dataset.columns)
 
     return giskard_dataset, df
 
@@ -51,7 +54,7 @@ def run_giskard_scan(giskard_model, giskard_dataset, model_name, model_version, 
     root_dir = cfg.paths.root_path
     scan_path = os.path.join(root_dir, "reports",
                              f"test_suite_{model_name}_v{model_version}_sample_{data_version}.html")
-    scan = giskard.scan(giskard_model, giskard_dataset)
+    scan = giskard.scan(giskard_model, giskard_dataset, list(range(310)))
     scan.to_html(scan_path)
 
     return scan

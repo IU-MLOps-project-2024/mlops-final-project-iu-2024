@@ -36,6 +36,9 @@ def sample_data():
         repo=cfg.data.repo,
         rev=cfg.data.version
     )
+
+    version = cfg.version
+    sample_size = cfg.data.sample_size
     
     data = pd.read_csv(data_url)
     sample = data.iloc[:int(len(data) * sample_size * version)]
@@ -203,6 +206,8 @@ def version_sample():
         cfg = compose(config_name="data_version")
 
     cfg.version += 1
+    if cfg.version >= 6:
+        cfg.version = 1
     OmegaConf.save(cfg, "configs/data_version.yaml")
 
     subprocess.run([
