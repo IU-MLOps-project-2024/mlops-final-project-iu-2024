@@ -1,4 +1,4 @@
-artifact_path: basic_dt
+artifact_path: basic_transformer
 flavors:
   python_function:
     env:
@@ -14,15 +14,15 @@ flavors:
     serialization_format: cloudpickle
     sklearn_version: 1.5.1
 mlflow_version: 2.14.3
-model_size_bytes: 371799
-model_uuid: c266471571f54987a5affce4fb890765
-run_id: 8d40d6a430044e32b68a73e11c04f0f2
+model_size_bytes: 54271300
+model_uuid: b2b26183221b4ac9aa46402050b9c553
+run_id: ba2c2fc3c4804430a082e6ceeecfe5e5
 saved_input_example_info:
   artifact_path: input_example.json
   format: tf-serving
   type: ndarray
 signature:
   inputs: '[{"type": "tensor", "tensor-spec": {"dtype": "float32", "shape": [-1, 310]}}]'
-  outputs: '[{"type": "long", "required": true}]'
+  outputs: '[{"type": "tensor", "tensor-spec": {"dtype": "int64", "shape": [-1]}}]'
   params: null
-utc_time_created: '2024-07-24 03:12:39.588022'
+utc_time_created: '2024-07-27 18:18:25.558806'
